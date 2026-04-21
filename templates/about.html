@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="prediction-card p-5">
+                <h2 class="text-center mb-5">About This Project</h2>
+                
+                <div class="row mb-5">
+                    <div class="col-md-6">
+                        <h4 class="mb-4">Technology Stack</h4>
+<div class="d-flex flex-wrap gap-2 mb-4">
+    <span class="badge bg-primary px-3 py-2">Python 3.9+</span>
+    <span class="badge bg-success px-3 py-2">Flask (Web Framework)</span>
+    <span class="badge bg-warning text-dark px-3 py-2">Scikit-Learn (ML Library)</span>
+    <span class="badge bg-info text-dark px-3 py-2">Pandas (Data Processing)</span>
+    <span class="badge bg-secondary px-3 py-2">NumPy (Numerical Computing)</span>
+    <span class="badge bg-danger px-3 py-2">Bootstrap 5 (Frontend UI)</span>
+</div>
+                        
+                        {% if stats %}
+                        <h4 class="mb-4">Model Statistics</h4>
+                        <ul class="list-unstyled">
+                            <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>
+                                R² Score: {{ "%.4f"|format(stats.r2_score) }}</li>
+                            <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>
+                                Mean Absolute Error: {{ "%.0f"|format(stats.mae) }}</li>
+                            <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>
+                                Training Samples: {{ stats.training_samples }}</li>
+                            <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>
+                                Features Used: {{ stats.feature_count }}</li>
+                        </ul>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <h4 class="mb-4">Algorithm</h4>
+                        <div class="p-4 rounded-3" style="background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.3);">
+                            <h5 class="text-gradient">Gradient Boosting Regressor</h5>
+                            <p class="text-muted mb-0">
+    Gradient Boosting is a powerful ensemble learning technique that builds multiple
+    decision trees sequentially. Each new model improves upon the errors of the previous one,
+    resulting in high prediction accuracy and strong generalization for property price estimation.
+</p>
+                        </div>
+                        
+                        {% if feature_importance is not none %}
+                        <h4 class="mb-3 mt-4">Top Important Features</h4>
+                        <div class="table-responsive">
+                            <table class="table table-sm table-dark">
+                                <thead>
+                                    <tr>
+                                        <th>Feature</th>
+                                        <th class="text-end">Importance</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for _, row in feature_importance.iterrows() %}
+                                    <tr>
+                                        <td>{{ row.feature }}</td>
+                                        <td class="text-end">{{ "%.3f"|format(row.importance) }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="text-center">
+                    <h4 class="mb-4">How It Works</h4>
+                    <div class="row justify-content-center">
+                        <div class="col-md-3 mb-3">
+                            <div class="p-3 rounded-3" style="background: rgba(255,255,255,0.05);">
+                                <div class="h4 text-gradient">1</div>
+                                <h6>Data Preprocessing</h6>
+                                <small class="text-muted">Feature encoding, scaling, and data preparation</small>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <div class="p-3 rounded-3" style="background: rgba(255,255,255,0.05);">
+                                <div class="h4 text-gradient">2</div>
+                                <h6>Model Training</h6>
+                                <small class="text-muted">Model training with performance evaluation  (R² score)</small>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <div class="p-3 rounded-3" style="background: rgba(255,255,255,0.05);">
+                                <div class="h4 text-gradient">3</div>
+                                <h6>Prediction</h6>
+                                <small class="text-muted">User input transformation and confidence-based estimation</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

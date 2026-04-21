@@ -1,0 +1,38 @@
+{
+  "features": [
+    "area",
+    "bedrooms",
+    "bathrooms",
+    "age",
+    "parking",
+    "location_encoded",
+    "furnishing_encoded",
+    "ac_encoded",
+    "mainroad_encoded"
+  ],
+  "locations": [
+    "Aurangabad",
+    "Kolhapur",
+    "Mumbai",
+    "Nagpur",
+    "Nashik",
+    "Pune",
+    "Solapur",
+    "Thane"
+  ],
+  "furnishing": [
+    "Fully Furnished",
+    "Semi-Furnished",
+    "Unfurnished"
+  ],
+  "ac": [
+    "No",
+    "Yes"
+  ],
+  "main_road": [
+    "No",
+    "Yes"
+  ],
+  "r2_score": 0.9934431390400181,
+  "mae": 844969.6321145406
+}

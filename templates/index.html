@@ -1,0 +1,179 @@
+{% extends "base.html" %}
+
+{% block title %}Predict House Price - AI Predictor{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row g-5 align-items-center">
+        <!-- Left Side - Info -->
+        <div class="col-lg-5">
+            <div class="badge bg-primary bg-opacity-25 text-primary mb-3 px-3 py-2 rounded-pill">
+                <i class="fas fa-robot me-2"></i>Machine Learning Powered
+            </div>
+            <h1 class="display-4 fw-bold mb-4">
+    Intelligent Property Valuation System
+    <span class="text-gradient d-block">Built with Machine Learning</span>
+</h1>
+            <p class="lead mb-4" style="color: #110f0f; opacity: 0.95;">
+                Get accurate price estimates based on location, size, amenities and market trends.
+            </p>
+            
+            {% if stats %}
+            <div class="row g-3 mt-4">
+                <div class="col-6">
+                    <div class="stat-card">
+                        <div class="h3 mb-1 text-gradient">{{ "%.1f"|format(stats.test_r2_score * 100) }}%</div>
+                        <small class="text-muted">Accuracy</small>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="stat-card">
+                        <div class="h3 mb-1 text-gradient">{{ stats.feature_count }}</div>
+                        <small class="text-muted">Features</small>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Right Side - Simplified Form -->
+        <div class="col-lg-7">
+            <div class="prediction-card p-4 p-md-5">
+                <h3 class="mb-4">
+                    <i class="fas fa-home me-2 text-primary"></i>Property Details
+                </h3>
+                
+                {% if error %}
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="fas fa-exclamation-circle me-2"></i>{{ error }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+                {% endif %}
+
+                <form action="{{ url_for('predict') }}" method="POST" id="predictForm">
+                    <div class="row g-3">
+                        
+                        <!-- Location -->
+                        <select class="form-select form-select-lg" name="location" required>
+    <option value="" selected disabled>Select City</option>
+    {% for loc in locations %}
+    <option value="{{ loc }}">{{ loc }}</option>
+{% endfor %}
+</select>
+
+                        <!-- Area -->
+                        <div class="col-md-6">
+                            <label class="form-label">
+                                <i class="fas fa-ruler-combined me-1 text-primary"></i>Area (sq ft)
+                            </label>
+                            <input type="number" class="form-control form-control-lg" name="area" 
+                                   placeholder="e.g., 1200" min="300" required>
+                        </div>
+
+                        <!-- Property Age -->
+                        <div class="col-md-6">
+                            <label class="form-label">
+                                <i class="fas fa-calendar-alt me-1 text-primary"></i>Property Age (years)
+                            </label>
+                            <input type="number" class="form-control form-control-lg" name="age" 
+                                   placeholder="e.g., 5" min="0" max="100" required>
+                        </div>
+
+                        <!-- Bedrooms -->
+                        <div class="col-md-6">
+                            <label class="form-label">
+                                <i class="fas fa-bed me-1 text-primary"></i>Bedrooms
+                            </label>
+                            <select class="form-select form-select-lg" name="bedrooms" required>
+                                {% for i in range(1, 6) %}
+                                <option value="{{ i }}" {% if i == 2 %}selected{% endif %}>{{ i }} BHK</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <!-- Bathrooms -->
+                        <div class="col-md-6">
+                            <label class="form-label">
+                                <i class="fas fa-bath me-1 text-primary"></i>Bathrooms
+                            </label>
+                            <select class="form-select form-select-lg" name="bathrooms" required>
+                                {% for i in range(1, 5) %}
+                                <option value="{{ i }}" {% if i == 2 %}selected{% endif %}>{{ i }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <!-- Furnishing -->
+                        <div class="col-md-6">
+                            <label class="form-label">
+                                <i class="fas fa-couch me-1 text-primary"></i>Furnishing
+                            </label>
+                            <select class="form-select form-select-lg" name="furnishing" required>
+                                <option value="Furnished">Fully Furnished</option>
+                                <option value="Semi-Furnished" selected>Semi-Furnished</option>
+                                <option value="Unfurnished">Unfurnished</option>
+                            </select>
+                        </div>
+
+ <!-- Air Conditioning -->
+<div class="col-md-6">
+    <label class="form-label">
+        <i class="fas fa-snowflake me-1 text-primary"></i>Air Conditioning
+    </label>
+    <select class="form-select form-select-lg" name="air_conditioning" required>
+        <option value="Yes" selected>Yes</option>
+        <option value="No">No</option>
+    </select>
+</div>
+
+                        <!-- Parking - NEW -->
+<div class="col-md-6">
+    <label class="form-label">
+        <i class="fas fa-car me-1 text-primary"></i>Parking Spaces
+    </label>
+    <select class="form-select form-select-lg" name="parking" required>
+        <option value="0">No Parking</option>
+        <option value="1" selected>1 Space</option>
+        <option value="2">2 Spaces</option>
+    </select>
+</div>
+
+<!-- Main Road Access -->
+<div class="col-md-6">
+    <label class="form-label">
+        <i class="fas fa-road me-1 text-primary"></i>Main Road Access
+    </label>
+    <select class="form-select form-select-lg" name="main_road" required>
+        <option value="Yes" selected>Yes</option>
+        <option value="No">No</option>
+    </select>
+</div>           
+
+                        <!-- Submit -->
+                        <div class="col-12 mt-4">
+                            <button type="submit" class="btn btn-predict w-100 text-white" id="submitBtn">
+                                <i class="fas fa-magic me-2"></i>
+                                <span class="btn-text">Predict Price</span>
+                                <span class="btn-loading d-none">
+                                    <i class="fas fa-spinner fa-spin me-2"></i>Analyzing...
+                                </span>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.getElementById('predictForm').addEventListener('submit', function() {
+    const btn = document.getElementById('submitBtn');
+    btn.querySelector('.btn-text').classList.add('d-none');
+    btn.querySelector('.btn-loading').classList.remove('d-none');
+    btn.disabled = true;
+});
+</script>
+{% endblock %}

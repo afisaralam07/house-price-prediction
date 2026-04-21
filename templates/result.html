@@ -1,0 +1,271 @@
+{% extends "base.html" %}
+
+{% block title %}Prediction Result - AI House Price Predictor{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            
+            <!-- Success Header -->
+            <div class="text-center mb-4">
+                <div class="d-inline-flex align-items-center justify-content-center rounded-circle mb-3" 
+                     style="width: 90px; height: 90px; background: linear-gradient(135deg, #10b981, #059669); box-shadow: 0 10px 30px -10px rgba(16, 185, 129, 0.5);">
+                    <i class="fas fa-check-circle fa-3x text-white"></i>
+                </div>
+                <h2 class="fw-bold mb-2">Prediction Complete!</h2>
+                <p class="text-dark fw-semibold">
+    <i class="fas fa-calendar-alt me-2"></i>{{ result.timestamp }}
+</p>
+            </div>
+
+            <!-- Main Price Result Card -->
+            <div class="result-box text-center mb-4 position-relative overflow-hidden">
+                <div class="position-absolute top-0 start-0 w-100 h-1 bg-gradient" 
+                     style="background: linear-gradient(90deg, #6366f1, #a855f7, #ec4899);"></div>
+                
+                <div class="text-uppercase text-muted mb-2 small fw-semibold" style="letter-spacing: 3px;">
+                    Estimated Market Value
+                </div>
+                
+                <div class="price-display mb-2">
+                 {{ result.formatted_price_indian }}
+                </div>
+                
+                <div class="text-muted mb-3">
+                    <i class="fas fa-chart-line me-2"></i>
+                    Confidence Range:
+                   <span class="fw-semibold">
+                    {{ result.formatted_low_indian }} - {{ result.formatted_high_indian }}
+                </span>
+                </div>
+                
+                <div class="d-inline-flex align-items-center px-4 py-2 rounded-pill" 
+                     style="background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.3);">
+                    <i class="fas fa-shield-alt me-2 text-success"></i>
+                    <span class="fw-semibold" style="color: #10b981;">{{ result.confidence }}% Model Confidence</span>
+                </div>
+            </div>
+
+            <!-- Quick Stats Row -->
+            <div class="row g-3 mb-4">
+                <div class="col-6 col-md-3">
+                    <div class="stat-card text-center p-3">
+                        <div class="feature-icon mx-auto mb-2" style="width: 50px; height: 50px; border-radius: 12px; font-size: 1.2rem;">
+                            <i class="fas fa-bed"></i>
+                        </div>
+                        <div class="text-muted small mb-1">Bedrooms</div>
+                        <div class="fw-bold fs-5">{{ result.bedrooms }} <span class="text-muted small">BHK</span></div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="stat-card text-center p-3">
+                        <div class="feature-icon mx-auto mb-2" style="width: 50px; height: 50px; border-radius: 12px; font-size: 1.2rem;">
+                            <i class="fas fa-bath"></i>
+                        </div>
+                        <div class="text-muted small mb-1">Bathrooms</div>
+                        <div class="fw-bold fs-5">{{ result.bathrooms }}</div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="stat-card text-center p-3">
+                        <div class="feature-icon mx-auto mb-2" style="width: 50px; height: 50px; border-radius: 12px; font-size: 1.2rem;">
+                            <i class="fas fa-ruler-combined"></i>
+                        </div>
+                        <div class="text-muted small mb-1">Living Area</div>
+                        <div class="fw-bold fs-5">{{ result.area|int }} <span class="text-muted small">sqft</span></div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="stat-card text-center p-3">
+                        <div class="feature-icon mx-auto mb-2" style="width: 50px; height: 50px; border-radius: 12px; font-size: 1.2rem;">
+                            <i class="fas fa-tag"></i>
+                        </div>
+                        <div class="text-muted small mb-1">Price/sqft</div>
+                        <div class="fw-bold fs-5 text-gradient">₹{{ (result.predicted_price / result.area)|int if result.area > 0 else 0 }}
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Detailed Property Information -->
+<div class="prediction-card p-4 mb-4">
+    <h5 class="mb-4 d-flex align-items-center">
+        <i class="fas fa-list-ul me-2 text-primary"></i>
+        Detailed Property Information
+    </h5>
+
+    <div class="row">
+        <!-- Left Column -->
+        <div class="col-md-6">
+            <table class="table table-borderless table-sm text-white mb-0">
+                <tbody>
+                    <tr>
+                        <td class="text-muted py-2">
+                            <i class="fas fa-map-marker-alt me-2 w-20"></i>Location:
+                        </td>
+                        <td class="text-end fw-semibold py-2">{{ result.location }}</td>
+                    </tr>
+                    <tr>
+                        <td class="text-muted py-2">
+                            <i class="fas fa-ruler-combined me-2 w-20"></i>Total Area:
+                        </td>
+                        <td class="text-end fw-semibold py-2">{{ result.area }} sqft</td>
+                    </tr>
+                    <tr>
+                        <td class="text-muted py-2">
+                            <i class="fas fa-calendar me-2 w-20"></i>Property Age:
+                        </td>
+                        <td class="text-end fw-semibold py-2">{{ result.age }} Years</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Right Column -->
+        <div class="col-md-6">
+            <table class="table table-borderless table-sm text-white mb-0">
+                <tbody>
+                    <tr>
+                        <td class="text-muted py-2">
+                            <i class="fas fa-couch me-2 w-20"></i>Furnishing:
+                        </td>
+                        <td class="text-end fw-semibold py-2">{{ result.furnishing }}</td>
+                    </tr>
+                    <tr>
+                        <td class="text-muted py-2">
+                            <i class="fas fa-car me-2 w-20"></i>Parking:
+                        </td>
+                        <td class="text-end fw-semibold py-2">{{ result.parking }}</td>
+                    </tr>
+                    <tr>
+                        <td class="text-muted py-2">
+                            <i class="fas fa-bed me-2 w-20"></i>Configuration:
+                        </td>
+                        <td class="text-end fw-semibold py-2">{{ result.bedrooms }} BHK</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <hr class="my-4 border-secondary border-opacity-25">
+
+    <!-- Value Analysis -->
+<div class="row text-center">
+    <div class="col-md-4">
+        <div class="p-3 rounded-3" style="background: rgba(99, 102, 241, 0.1);">
+            <div class="text-muted small mb-1">Base Estimate</div>
+            <div class="fw-bold text-primary">
+                {{ result.formatted_price_indian }}
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="p-3 rounded-3" style="background: rgba(16, 185, 129, 0.1);">
+            <div class="text-muted small mb-1">Low Range</div>
+            <div class="fw-bold text-success">
+                {{ result.formatted_low_indian }}
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="p-3 rounded-3" style="background: rgba(234, 179, 8, 0.1);">
+            <div class="text-muted small mb-1">High Range</div>
+            <div class="fw-bold text-warning">
+                {{ result.formatted_high_indian }}
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+
+<!-- Price Breakdown Card -->
+<div class="prediction-card p-4 mb-4">
+    <h5 class="mb-3 d-flex align-items-center">
+        <i class="fas fa-calculator me-2 text-primary"></i>
+        Price Breakdown
+    </h5>
+
+    <div class="row text-center">
+        <div class="col-4">
+            <div class="p-2 rounded-3" style="background: rgba(255,255,255,0.05);">
+                <div class="text-muted small mb-1">Low Estimate</div>
+                <div class="fw-bold text-success">
+                    {{ result.formatted_low_indian }}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-4">
+            <div class="p-2 rounded-3" style="background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(168, 85, 247, 0.2)); border: 1px solid rgba(99, 102, 241, 0.3);">
+                <div class="text-muted small mb-1">Best Estimate</div>
+                <div class="fw-bold text-gradient">
+                    {{ result.formatted_price_indian }}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-4">
+            <div class="p-2 rounded-3" style="background: rgba(255,255,255,0.05);">
+                <div class="text-muted small mb-1">High Estimate</div>
+                <div class="fw-bold text-warning">
+                    {{ result.formatted_high_indian }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+            <!-- Action Buttons -->
+            <div class="text-center">
+                <a href="{{ url_for('home') }}" class="btn btn-primary btn-lg px-5 me-3 mb-2">
+                    <i class="fas fa-redo me-2"></i>New Prediction
+                </a>
+                <button onclick="window.print()" class="btn btn-outline-light btn-lg px-5 mb-2">
+                    <i class="fas fa-print me-2"></i>Print Report
+                </button>
+            </div>
+
+            <!-- Disclaimer -->
+            <div class="text-center mt-4">
+                <small class="text-muted">
+                    <i class="fas fa-info-circle me-1"></i>
+                    This is an estimated house price predicted by the model based on historical data.
+                </small>
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+   /* Make all headings bright in dark mode */
+.result-box,
+.prediction-card {
+    color: #f3f4f6 !important;
+}
+
+/* Section titles */
+.result-box .text-uppercase,
+.prediction-card h5,
+.prediction-card h6 {
+    color: #ffffff !important;
+}
+
+/* Small labels like Bedrooms, Bathrooms, Base Estimate etc */
+.prediction-card .small,
+.result-box .text-muted,
+.prediction-card .text-muted {
+    color: #d1d5db !important;
+}
+
+/* Disclaimer */
+.text-center small {
+    color: #cbd5e1 !important;
+}
+</style>
+{% endblock %}
