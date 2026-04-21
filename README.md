@@ -60,8 +60,7 @@ cd house-price-prediction
 pip install -r requirements.txt
 python app.py
 
-Open in browser:
-http://127.0.0.1:5000/
+Open in browser:http://127.0.0.1:5000/
 
 📌 Future Improvements
 Use advanced ML algorithms
